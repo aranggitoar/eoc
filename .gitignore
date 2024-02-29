@@ -1,0 +1,5 @@
+**/ref
+**/build
+**/guide.md
+*.o
+*.bin
