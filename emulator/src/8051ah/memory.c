@@ -1,16 +1,22 @@
 #include "memory.h"
-#include "../utils.h"
 
-bwr_t* set_active_working_register_bank(iram_t *iram)
-{
-  // RS1 is declared as 2 if 1 so that the sum of any combination of RS1
-  // and RS0 would be different: (0, 1) = 1; (2 [1], 0) = 2; (2 [1], 1) =
-  // 3; (0, 0) = 0.
-  uint8_t idx = CHBI(iram->separated.SFR.PSW, 4) ? 2 : 0 + CHBI(iram->separated.SFR.PSW, 3);
-  switch (idx) {
-    case 1: return &iram->separated.R[1];
-    case 2: return &iram->separated.R[2];
-    case 3: return &iram->separated.R[3];
-    default: return &iram->separated.R[0];
-  }
+void init_ram(iram_t *iram) {
+  if (!iram) return;
+  iram->separated = (iram_separated_t){
+    .SFR = (sfr_t){
+      .SP = 0x07,
+      .P1 = 0xFF,
+      .SBUF = 0x00, // Supposed to be indeterminate.
+      .P2 = 0xFF,
+      .IE = 0x00, // X's are supposed to be indeterminate 0XX00000B.
+      .P3 = 0xFF,
+      .IP = 0x00, // X's are supposed to be indeterminate XXX00000B.
+    }
+  };
+}
+
+void init_rom(rom_t *rom, rom_t *custom_rom, bool is_custom) {
+  if (!rom) return;
+  if (is_custom) memcpy(rom, custom_rom, sizeof(rom_t));
+  else memcpy(rom, (rom_t){[0] = 0b01111111, [1] = 0b00101010, [2 ... 4095] = 0x00}, sizeof(rom_t));
 }

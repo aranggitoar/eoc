@@ -1,15 +1,17 @@
+#include "../utils.h"
 #include "memory.h"
+#include "cpu.h"
+#include "interface.h"
 
-typedef struct {
-  pc_t pc;
-  iram_t *iram;
-  rom_t *rom;
-} cpu_t;
+#pragma once
 
-cpu_t* init_cpu(rom_t *rom);
-void run_cpu(cpu_t *cpu);
+typedef struct device_t {
+  cpu_t cpu;
+  pin_state_t pin;
+} device_t;
 
-#define rom_8051ah_t rom_t
+void init_device(device_t *device, rom_t *rom);
+void run_device(device_t *device);
 
 #define init_8051ah_cpu(arg) init_cpu(arg)
-#define free_8051ah_cpu(arg) free_cpu(arg)
+#define run_8051ah_cpu(arg) run_cpu(arg)

@@ -1,7 +1,24 @@
 #include "instruction.h"
 
-static uint8_t reg_idx_from_opcode(uint8_t opcode) {
+/** ABBREVIATIONS **/
+/* id: immediate data
+   db: direct byte
+   dbi: direct bit
+   ir: indirect ram
+   eir: indirect external ram
+   r: register
+   a: accumulator
+   co: complement
+   c: carry
+   dptr: data pointer
+   edptr: dptr to external ram */
+
+static uint8_t get_reg_idx(uint8_t opcode) {
   return (CHBI(opcode, 0) << 0 | CHBI(opcode, 1) << 1 | CHBI(opcode, 2) << 2);
+}
+
+static uint8_t get_wrb_idx(psw_t psw) {
+  return (psw >> 3) & 0x03;
 }
 
 /******************************/
@@ -15,15 +32,13 @@ void MOV_id_to_a();
 
 void MOV_a_to_r();
 void MOV_db_to_r();
-void MOV_id_to_r(uint8_t data[2], iram_t *iram)
+void MOV_id_to_r(uint8_t ins, cpu_t *cpu)
 {
-  // Get address of the bank's array (which is address of the first
-  // register), add the index of the targeted register, write data by
-  // pointing to the targeted register's address.
-  /* *(*(set_active_working_register_bank(iram)) + reg_idx_from_opcode(data[0])) = data[1]; */
-  // More terse and readable but for some reason inconsistent between
-  // compilations, sometimes it works and sometimes it doesn't.
-  iram->separated.R[(iram->separated.SFR.PSW >> 3) & 0x03][reg_idx_from_opcode(data[0])] = data[1];
+  // Get working register bank index from RS1 and RS0, then pointer
+  // arithmetic to assign data to the targeted register.
+  cpu->pc = cpu->pc + 1; // As the opcode is two bytes.
+  uint8_t wrb_idx = get_wrb_idx(cpu->iram.separated.SFR.PSW);
+  *(cpu->iram.separated.R[wrb_idx] + get_reg_idx(ins)) = *(cpu->rom + cpu->pc);
 };
 
 void MOV_a_db();
@@ -36,6 +51,12 @@ void MOV_a_to_ir();
 void MOV_db_to_ir();
 void MOV_id_to_ir();
 void MOV_16bit_id_to_dptr();
+
+// DIRECT
+void PUSH(iram_t *iram)
+{
+  iram->separated.SFR.SP++;
+}
 
 
 /*********************************/

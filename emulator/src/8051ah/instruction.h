@@ -1,6 +1,8 @@
-#include <stdint.h>
 #include "memory.h"
+#include "cpu.h"
 #include "../utils.h"
+
+#pragma once
 
 /** ABBREVIATIONS **/
 /* id: immediate data
@@ -44,7 +46,6 @@ void MUL();
 void DIV();
 void DA();
 
-
 /************************/
 /*  LOGICAL OPERATIONS  */
 /************************/
@@ -79,7 +80,6 @@ void RR();
 void RRC();
 void SWAP();
 
-
 /******************************/
 /* DATA TRANSFER INSTRUCTIONS */
 /******************************/
@@ -90,7 +90,7 @@ void MOV_ir_to_a();
 void MOV_id_to_a();
 void MOV_a_to_r();
 void MOV_db_to_r();
-void MOV_id_to_r(uint8_t data[2], iram_t *iram);
+void MOV_id_to_r(uint8_t data, cpu_t *cpu);
 void MOV_a_to_db();
 void MOV_r_to_db();
 void MOV_db_to_db();
@@ -107,13 +107,12 @@ void MOVX_eir_to_a();
 void MOVX_16bit_edptr_to_a();
 void MOVX_a_to_eir();
 void MOVX_a_to_16bit_edptr();
-void PUSH();
+void PUSH(iram_t *iram);
 void POP();
 void XCH_r();
 void XCH_db();
 void XCH_ir();
 void XCHD_ir();
-
 
 /*********************************/
 /* BOOLEAN VARIABLE MANIPULATION */
@@ -140,7 +139,6 @@ void JNC();
 void JB();
 void JNB();
 void JBC();
-
 
 /*****************************************/
 /* PROGRAM BRANCHING AND MACHINE CONTROL */
