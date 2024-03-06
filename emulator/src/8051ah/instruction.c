@@ -58,10 +58,18 @@ void PUSH(iram_t *iram)
   iram->separated.SFR.SP++;
 }
 
-
 /*********************************/
 /* BOOLEAN VARIABLE MANIPULATION */
 /*********************************/
 
 void MOV_dbi_to_c();
 void MOV_c_to_dbi();
+
+/*****************************************/
+/* PROGRAM BRANCHING AND MACHINE CONTROL */
+/*****************************************/
+
+void LJMP(cpu_t *cpu)
+{
+  cpu->pc = cpu->rom[cpu->pc + 1] << 8 | cpu->rom[cpu->pc + 2];
+}

@@ -1,5 +1,3 @@
-#include "opcode.h"
-#include "instruction.h"
 #include "8051ah.h"
 
 void init_device(device_t *device, rom_t *rom)
@@ -14,6 +12,7 @@ void run_device(device_t *device)
 {
   if (!device) return;
   while (true) {
+    if (device->cpu.pc == ROM_SIZE) break;
     uint8_t ins = device->cpu.rom[device->cpu.pc];
     switch (ins) {
       case OP_MOV_id_to_r0:
@@ -26,8 +25,11 @@ void run_device(device_t *device)
       case OP_MOV_id_to_r7:
         MOV_id_to_r(ins, &device->cpu);
         break;
+      case OP_LJMP:
+        LJMP(&device->cpu);
+        break;
       case OP_NOP:
-        return;
+        break;
     }
     device->cpu.pc = device->cpu.pc + 1;
   }

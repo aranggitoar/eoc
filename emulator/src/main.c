@@ -7,10 +7,6 @@ int main()
   else {
     init_device(device, NULL);
     run_device(device);
-
-    PABI(device->cpu.iram.separated.R[0][7]);
-    printf("\n");
-
     free(device);
   }
   return 0;

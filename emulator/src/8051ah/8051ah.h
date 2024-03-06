@@ -2,6 +2,8 @@
 #include "memory.h"
 #include "cpu.h"
 #include "interface.h"
+#include "opcode.h"
+#include "instruction.h"
 
 #pragma once
 

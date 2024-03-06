@@ -149,7 +149,7 @@ void LCALL();
 void RET();
 void RETI();
 void AJMP();
-void LJMP();
+void LJMP(cpu_t *cpu);
 void SJMP();
 void JMP();
 void JZ();
