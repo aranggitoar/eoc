@@ -17,7 +17,7 @@ build/8051ah/8051ah.o: src/8051ah/8051ah.c src/8051ah/8051ah.h
 	gcc -c src/8051ah/8051ah.c -o build/8051ah/8051ah.o
 
 r8: src/main.c build/8051ah/8051ah.o build/8051ah/instruction.o build/8051ah/memory.o
-	gcc src/utils.h build/8051ah/memory.o build/8051ah/instruction.o build/8051ah/8051ah.o src/main.c -o build/main && build/main
+	gcc build/8051ah/memory.o build/8051ah/instruction.o build/8051ah/8051ah.o src/main.c -o build/main && build/main
 
 clean:
 	rm -rf build/*
