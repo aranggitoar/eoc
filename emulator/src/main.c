@@ -2,12 +2,8 @@
 
 int main()
 {
-  device_t *device = malloc(sizeof(device_t));
-  if (device == NULL) printf("Failed to allocate memory.\n");
-  else {
-    init_device(device, NULL);
-    run_device(device);
-    free(device);
-  }
+  device_t device;
+  init_device(&device, NULL);
+  run_device(&device);
   return 0;
 }

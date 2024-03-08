@@ -6,10 +6,16 @@
 #define IRAM_SIZE 148
 #define ROM_SIZE 4096
 #define EMEM_SIZE 65536
+#define EMEM_64K_LIMIT EMEM_SIZE
+#define EMEM_32K_LIMIT 32768
+#define EMEM_16K_LIMIT 16384
+#define EMEM_8K_LIMIT 8192
 
 /** Register Addresses **/
 // Blocks of registers are addressed with 's' and 'e' at the end of the
-// name to indicate 'start' and 'end' of the block.
+// name to indicate 'start' and 'end' of the block. Bit-addressable
+// registers are commented with 'BA'.
+// NOTE: Doesn't seem to be functionally necessary, remove?
 typedef enum mmap_t {
   R_B0s   = 0x00,
   R_B0e   = 0x07,
@@ -19,34 +25,72 @@ typedef enum mmap_t {
   R_B2e   = 0x17,
   R_B3s   = 0x18,
   R_B3e   = 0x1F,
-  BaSs    = 0x20,
-  BaSe    = 0x2F,
+  BaSs    = 0x20, // BA   0
+  BaSe    = 0x2F, // BA   127
   GPs     = 0x30,
   GPe     = 0x7F,
-  P0      = 0x80,
+  P0      = 0x80, // BA   128-136
   SP      = 0x81,
   DPL     = 0x81,
   DPH     = 0x82,
-  TCON    = 0x88,
+  TCON    = 0x88, // BA   137-144
   TMOD    = 0x89,
   TL0     = 0x8A,
   TL1     = 0x8B,
   TH0     = 0x8C,
   TH1     = 0x8D,
-  P1      = 0x90,
-  SCON    = 0x98,
+  P1      = 0x90, // BA   145-152
+  SCON    = 0x98, // BA   153-160
   SBUF    = 0x99,
-  P2      = 0xA0,
-  IE      = 0xA8,
-  P3      = 0xB0,
-  IP      = 0xB8,
-  PSW     = 0xD0,
-  A       = 0xE0,
-  B       = 0xF0
+  P2      = 0xA0, // BA   161-168
+  IE      = 0xA8, // BA   169-176
+  P3      = 0xB0, // BA   177-184
+  IP      = 0xB8, // BA   185-192
+  PSW     = 0xD0, // BA   193-200
+  A       = 0xE0, // BA   201-208
+  B       = 0xF0  // BA   209-216
 } mmap_t;
+
+// Bit-addressable addresses for lookup table.
+// NOTE: Doesn't seem to be functionally necessary, remove?
+typedef enum mmap_ba_t {
+  BaSs_ba   = 0x00, // 0
+  BaSe_ba   = 0x7F, // 127
+  P0s_ba    = 0x80, // 128
+  P0e_ba    = 0x88, // 136
+  TCONs_ba  = 0x89, // 137
+  TCONe_ba  = 0x90, // 144
+  P1s_ba    = 0x91, // 145
+  P1e_ba    = 0x98, // 152
+  SCONs_ba  = 0x99, // 153
+  SCONe_ba  = 0xA0, // 160
+  P2s_ba    = 0xA1, // 161
+  P2e_ba    = 0xA8, // 168
+  IEs_ba    = 0xA9, // 169
+  IEe_ba    = 0xB0, // 176
+  P3s_ba    = 0xB1, // 177
+  P3e_ba    = 0xB8, // 184
+  IPs_ba    = 0xB9, // 185
+  IPe_ba    = 0xC0, // 192
+  PSWs_ba   = 0xC1, // 193
+  PSWe_ba   = 0xC8, // 200
+  As_ba     = 0xC9, // 201
+  Ae_ba     = 0xD0, // 208
+  Bs_ba     = 0xD1, // 209
+  Be_ba     = 0xD8, // 216
+} mmap_ba_t;
+
+// Bit-address lookup table.
+typedef struct balt_single_t {
+  uint8_t *ptr;
+  uint8_t idx;
+} balt_single_t;
+typedef balt_single_t iram_balt_t[216];
 
 /** Program Counter **/
 // Separate from IRAM.
+// TODO: Decide whether to use a union of x2 uint8_t and x1 uint16_t or
+// simply x1 uint16_t.
 /* typedef uint8_t pc_8b_t[2]; */
 typedef uint16_t pc_t;
 /* typedef union pc_t { */
@@ -260,6 +304,8 @@ typedef enum rom_issra_t {
 typedef uint8_t emem_t[EMEM_SIZE];
 
 void init_ram(iram_t *iram);
+void init_ram_balt(iram_balt_t iram_balt, iram_t *iram);
 
-uint8_t* read_rom(rom_t *rom, uint8_t addr);
 void init_rom(rom_t *rom, rom_t *custom_rom, bool is_custom);
+uint8_t* read_rom(rom_t *rom, uint8_t addr);
+void init_erom(emem_t *erom, uint16_t limit);

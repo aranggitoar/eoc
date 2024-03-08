@@ -1,3 +1,5 @@
+/* 8051AH (MCS-51) assembly instruction set and helper functions, grouped
+   by their functionality and not arranged by their opcodes. */
 #include "memory.h"
 #include "cpu.h"
 #include "../utils.h"
@@ -50,27 +52,27 @@ void DA();
 /*  LOGICAL OPERATIONS  */
 /************************/
 
-void ANL_r_to_a();
-void ANL_db_to_a();
-void ANL_ir_to_a();
-void ANL_id_to_a();
-void ANL_a_to_db();
-void ANL_id_to_db();
+void ANL_r_to_a(uint8_t ins, cpu_t *cpu);
+void ANL_db_to_a(cpu_t *cpu);
+void ANL_ir_to_a(uint8_t ins, cpu_t *cpu);
+void ANL_id_to_a(cpu_t *cpu);
+void ANL_a_to_db(cpu_t *cpu);
+void ANL_id_to_db(cpu_t *cpu);
 // More in Boolean Variable Manipulation group.
-void ORL_r_to_a();
-void ORL_db_to_a();
-void ORL_ir_to_a();
-void ORL_id_to_a();
-void ORL_a_to_db();
-void ORL_id_to_db();
+void ORL_r_to_a(uint8_t ins, cpu_t *cpu);
+void ORL_db_to_a(cpu_t *cpu);
+void ORL_ir_to_a(uint8_t ins, cpu_t *cpu);
+void ORL_id_to_a(cpu_t *cpu);
+void ORL_a_to_db(cpu_t *cpu);
+void ORL_id_to_db(cpu_t *cpu);
 // More in Boolean Variable Manipulation group.
-void XRL_r_to_a();
-void XRL_db_to_a();
-void XRL_ir_to_a();
-void XRL_id_to_a();
-void XRL_a_to_db();
-void XRL_id_to_db();
-void CLR_a();
+void XRL_r_to_a(uint8_t ins, cpu_t *cpu);
+void XRL_db_to_a(cpu_t *cpu);
+void XRL_ir_to_a(uint8_t ins, cpu_t *cpu);
+void XRL_id_to_a(cpu_t *cpu);
+void XRL_a_to_db(cpu_t *cpu);
+void XRL_id_to_db(cpu_t *cpu);
+void CLR_a(cpu_t *cpu);
 // More in Boolean Variable Manipulation group.
 void CPL_a();
 // More in Boolean Variable Manipulation group.
@@ -87,10 +89,10 @@ void SWAP();
 void MOV_r_to_a();
 void MOV_db_to_a();
 void MOV_ir_to_a();
-void MOV_id_to_a();
+void MOV_id_to_a(cpu_t *cpu);
 void MOV_a_to_r();
 void MOV_db_to_r();
-void MOV_id_to_r(uint8_t data, cpu_t *cpu);
+void MOV_id_to_r(uint8_t ins, cpu_t *cpu);
 void MOV_a_to_db();
 void MOV_r_to_db();
 void MOV_db_to_db();
@@ -98,7 +100,7 @@ void MOV_ir_to_db();
 void MOV_id_to_db();
 void MOV_a_to_ir();
 void MOV_db_to_ir();
-void MOV_id_to_ir();
+void MOV_id_to_ir(uint8_t ins, cpu_t *cpu);
 void MOV_16bit_id_to_dptr();
 // More in Boolean Variable Manipulation group.
 void MOVC_dptr_to_a();
@@ -118,18 +120,18 @@ void XCHD_ir();
 /* BOOLEAN VARIABLE MANIPULATION */
 /*********************************/
 
-void CLR_c();
-void CLR_dbi();
-void SETB_c();
-void SETB_dbi();
+void CLR_c(cpu_t *cpu);
+void CLR_dbi(balt_single_t addr, cpu_t *cpu);
+void SETB_c(cpu_t *cpu);
+void SETB_dbi(balt_single_t addr, cpu_t *cpu);
 void CPL_c();
 void CPL_dbi();
 void ANL_dbi_to_c();
 void ANL_co_of_dbi_to_c();
 void ORL_dbi_to_c();
 void ORL_co_of_dbi_to_c();
-void MOV_dbi_to_c();
-void MOV_c_to_dbi();
+void MOV_dbi_to_c(balt_single_t addr, cpu_t *cpu);
+void MOV_c_to_dbi(balt_single_t addr, cpu_t *cpu);
 #define MOV(i, o) _Generic((i), \
   char: _Generic((o), \
           char: MOV_db_to_r), \

@@ -9,11 +9,12 @@
 
 typedef struct device_t {
   cpu_t cpu;
+  iram_balt_t iram_balt;
   pin_state_t pin;
 } device_t;
 
 void init_device(device_t *device, rom_t *rom);
 void run_device(device_t *device);
 
-#define init_8051ah_cpu(arg) init_cpu(arg)
-#define run_8051ah_cpu(arg) run_cpu(arg)
+#define init_8051ah_device(arg) init_device(arg)
+#define run_8051ah_device(arg) run_device(arg)
