@@ -1,4 +1,4 @@
-#include "test_utils.h"
+#include <test/test_utils.h>
 
 #define HEADER_SYMBOL "=================================================="
 #define BOLD "\e[1m"
@@ -21,5 +21,5 @@ void printf_header(char *file_name, int file_name_len, bool is_top)
 void assert_equal_uint8(uint8_t a, uint8_t b, const char *func_name)
 {
   if (a == b) printf(BOLD_GREEN "✔" RESET GREEN " %s\n" RESET, func_name);
-  else printf(BOLD_RED "✘" RESET RED " %s\n" RESET, func_name);
+  else printf(BOLD_RED "✘" RESET RED " %s\n" RESET "  should be %d, but is %d\n", func_name, a, b);
 }
