@@ -3,3 +3,4 @@
 **/guide.md
 *.o
 *.bin
+compile_commands.json
