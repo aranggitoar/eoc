@@ -1,6 +1,7 @@
-#include "../utils.h"
+#ifndef MEMORY_H_INCLUDED
+#define MEMORY_H_INCLUDED
 
-#pragma once
+#include <utils.h>
 
 // Amount of 8 bit blocks.
 #define IRAM_SIZE 148
@@ -308,4 +309,6 @@ void init_ram_balt(iram_balt_t iram_balt, iram_t *iram);
 
 void init_rom(rom_t *rom, rom_t *custom_rom, bool is_custom);
 uint8_t* read_rom(rom_t *rom, uint8_t addr);
-void init_erom(emem_t *erom, uint16_t limit);
+/* void init_erom(emem_t *erom, uint16_t limit); */
+
+#endif /* MEMORY_H_INCLUDED */

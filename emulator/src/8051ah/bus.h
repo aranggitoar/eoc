@@ -1,7 +1,8 @@
 // Doesn't seem to be necessary, src/8051ah/instruction.c for reference.
-#include "../utils.h"
+#ifndef BUS_H_INCLUDED
+#define BUS_H_INCLUDED
 
-#pragma once
+#include <utils.h>
 
 typedef uint16_t rom_bus_t;
 
@@ -24,3 +25,5 @@ typedef struct immediate_addressing_t {
   uint8_t OP;
   uint8_t data;
 } immediate_addressing_t;
+
+#endif /* BUS_H_INCLUDED */

@@ -1,9 +1,9 @@
-#include "8051ah/8051ah.h"
+#include <device.h>
 
 int main()
 {
-  device_t device;
-  init_device(&device, NULL);
-  run_device(&device);
+  device_8051ah_t device;
+  init_device_8051ah(&device, NULL);
+  run_device_8051ah(&device);
   return 0;
 }

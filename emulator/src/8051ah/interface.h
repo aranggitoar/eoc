@@ -1,7 +1,9 @@
-#include "../utils.h"
+#ifndef INTERFACE_H_INCLUDED
+#define INTERFACE_H_INCLUDED
 
-#pragma once
+#include <utils.h>
 
+// User's manual pg. 114.
 typedef struct port_t {
   bool latch;
   bool output_driver;
@@ -68,44 +70,10 @@ typedef union pin_id_t {
 } pin_id_t;
 
 typedef struct pin_state_t {
-  bool P10;
-  bool P11;
-  bool P12;
-  bool P13;
-  bool P14;
-  bool P15;
-  bool P16;
-  bool P17;
-  bool VPD;
-  bool P30;
-  bool P31;
-  bool P32;
-  bool P33;
-  bool P34;
-  bool P35;
-  bool P36;
-  bool P37;
-  bool XTAL2;
-  bool XTAL1;
-  bool VSS;
-  bool P20;
-  bool P21;
-  bool P22;
-  bool P23;
-  bool P24;
-  bool P25;
-  bool P26;
-  bool P27;
-  bool PSEN;
-  bool PROG;
-  bool VDD;
-  bool P00;
-  bool P01;
-  bool P02;
-  bool P03;
-  bool P04;
-  bool P05;
-  bool P06;
-  bool P07;
-  bool VCC;
+  bool n[40];
 } pin_state_t;
+
+// Pin related functions.
+void connect_external_memory();
+
+#endif /* INTERFACE_H_INCLUDED */

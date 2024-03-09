@@ -1,20 +1,19 @@
-#include "../utils.h"
-#include "memory.h"
-#include "cpu.h"
-#include "interface.h"
-#include "opcode.h"
-#include "instruction.h"
+#ifndef DEVICE_8051AH_H_INCLUDED
+#define DEVICE_8051AH_H_INCLUDED
 
-#pragma once
+#include <utils.h>
+#include <8051ah/memory.h>
+#include <8051ah/cpu.h>
+#include <8051ah/interface.h>
+#include <8051ah/instruction.h>
 
-typedef struct device_t {
+typedef struct device_8051ah_t {
   cpu_t cpu;
   iram_balt_t iram_balt;
   pin_state_t pin;
-} device_t;
+} device_8051ah_t;
 
-void init_device(device_t *device, rom_t *rom);
-void run_device(device_t *device);
+void init_device_8051ah(device_8051ah_t *device, rom_t *rom);
+void run_device_8051ah(device_8051ah_t *device);
 
-#define init_8051ah_device(arg) init_device(arg)
-#define run_8051ah_device(arg) run_device(arg)
+#endif /* DEVICE_8051AH_H_INCLUDED */
