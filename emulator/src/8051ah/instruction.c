@@ -10,6 +10,106 @@ static uint8_t get_wrb_idx(psw_t psw)
   return (psw >> 3) & 0x03;
 }
 
+/***************************/
+/*  ARITHMETIC OPERATIONS  */
+/***************************/
+
+void ADD_r(iopcode_t ins, cpu_t *cpu)
+{
+}
+
+void ADD_db(cpu_t *cpu)
+{
+  cpu->pc = cpu->pc + 1;
+  uint8_t c_states = (cpu->iram.separated.SFR.A  & 0b10001000) << 0;
+  if ((cpu->iram.separated.SFR.A + cpu->iram.compact[cpu->rom[cpu->pc]]) > 0xFF) {
+    cpu->iram.separated.SFR.A = (cpu->iram.separated.SFR.A + cpu->iram.compact[cpu->rom[cpu->pc]]) - 0xFF;
+    cpu->iram.separated.SFR.PSW |= 1 << 2;
+  } else cpu->iram.separated.SFR.A += cpu->iram.compact[cpu->rom[cpu->pc]];
+  // If there is a carry out on bit 7, set carry flag.
+  if (((c_states >> 7) & 1) & !((cpu->iram.separated.SFR.A >> 7) & 1))
+    cpu->iram.separated.SFR.PSW |= 1 << 7;
+  // If there is a carry out on bit 3, set auxiliary carry flag.
+  if (((c_states >> 3) & 1) & !((cpu->iram.separated.SFR.A >> 3) & 1))
+    cpu->iram.separated.SFR.PSW |= 1 << 6;
+}
+
+void ADD_ir(iopcode_t ins, cpu_t *cpu)
+{
+  cpu->pc = cpu->pc + 1;
+  uint8_t c_states = (cpu->iram.separated.SFR.A  & 0b10001000) << 0;
+  if ((cpu->iram.separated.SFR.A + cpu->iram.separated.R[get_wrb_idx(cpu->iram.separated.SFR.PSW)][(ins >> 0) & 1]) > 0xFF) {
+    cpu->iram.separated.SFR.A = (cpu->iram.separated.SFR.A + cpu->iram.separated.R[get_wrb_idx(cpu->iram.separated.SFR.PSW)][(ins >> 0) & 1]) - 0xFF;
+    cpu->iram.separated.SFR.PSW |= 1 << 2;
+  } else cpu->iram.separated.SFR.A += cpu->iram.separated.R[get_wrb_idx(cpu->iram.separated.SFR.PSW)][(ins >> 0) & 1];
+  // If there is a carry out on bit 7, set carry flag.
+  if (((c_states >> 7) & 1) & !((cpu->iram.separated.SFR.A >> 7) & 1))
+    cpu->iram.separated.SFR.PSW |= 1 << 7;
+  // If there is a carry out on bit 3, set auxiliary carry flag.
+  if (((c_states >> 3) & 1) & !((cpu->iram.separated.SFR.A >> 3) & 1))
+    cpu->iram.separated.SFR.PSW |= 1 << 6;
+}
+
+void ADD_id(cpu_t *cpu)
+{
+  cpu->pc = cpu->pc + 1;
+  uint8_t c_states = (cpu->iram.separated.SFR.A  & 0b10001000) << 0;
+  if ((cpu->iram.separated.SFR.A + cpu->rom[cpu->pc]) > 0xFF) {
+    cpu->iram.separated.SFR.A = (cpu->iram.separated.SFR.A + cpu->rom[cpu->pc]) - 0xFF;
+    cpu->iram.separated.SFR.PSW |= 1 << 2;
+  } else cpu->iram.separated.SFR.A += cpu->rom[cpu->pc];
+  // If there is a carry out on bit 7, set carry flag.
+  if (((c_states >> 7) & 1) & !((cpu->iram.separated.SFR.A >> 7) & 1))
+    cpu->iram.separated.SFR.PSW |= 1 << 7;
+  // If there is a carry out on bit 3, set auxiliary carry flag.
+  if (((c_states >> 3) & 1) & !((cpu->iram.separated.SFR.A >> 3) & 1))
+    cpu->iram.separated.SFR.PSW |= 1 << 6;
+}
+
+void INC_a(cpu_t *cpu)
+{
+  cpu->iram.separated.SFR.A++;
+}
+
+void INC_r(iopcode_t ins, cpu_t *cpu)
+{
+  cpu->iram.separated.R[get_wrb_idx(cpu->iram.separated.SFR.PSW)][get_reg_idx(ins)]++;
+}
+
+void INC_db(cpu_t *cpu)
+{
+  cpu->pc = cpu->pc + 1;
+  cpu->iram.compact[cpu->rom[cpu->pc]]++;
+}
+
+void INC_ir(iopcode_t ins, cpu_t *cpu)
+{
+  cpu->pc = cpu->pc + 1;
+  cpu->iram.separated.R[get_wrb_idx(cpu->iram.separated.SFR.PSW)][(ins >> 0) & 1]++;
+}
+
+void DEC_a(cpu_t *cpu)
+{
+  cpu->iram.separated.SFR.A--;
+}
+
+void DEC_r(iopcode_t ins, cpu_t *cpu)
+{
+  cpu->iram.separated.R[get_wrb_idx(cpu->iram.separated.SFR.PSW)][get_reg_idx(ins)]--;
+}
+
+void DEC_db(cpu_t *cpu)
+{
+  cpu->pc = cpu->pc + 1;
+  cpu->iram.compact[cpu->rom[cpu->pc]]--;
+}
+
+void DEC_ir(iopcode_t ins, cpu_t *cpu)
+{
+  cpu->pc = cpu->pc + 1;
+  cpu->iram.separated.R[get_wrb_idx(cpu->iram.separated.SFR.PSW)][(ins >> 0) & 1]--;
+}
+
 /************************/
 /*  LOGICAL OPERATIONS  */
 /************************/
@@ -120,6 +220,30 @@ void CLR_a(cpu_t *cpu)
   cpu->iram.separated.SFR.A = 0;
 }
 
+void RL(cpu_t *cpu)
+{
+  cpu->iram.separated.SFR.A = cpu->iram.separated.SFR.A << 1 | cpu->iram.separated.SFR.A >> 7;
+}
+
+void RLC(cpu_t *cpu)
+{
+  uint8_t c = ((cpu->iram.separated.SFR.PSW >> 7) << 7);
+  cpu->iram.separated.SFR.PSW = ((cpu->iram.separated.SFR.A >> 7) & 1) << 7;
+  cpu->iram.separated.SFR.A = cpu->iram.separated.SFR.A << 1 | c >> 7;
+}
+
+void RR(cpu_t *cpu)
+{
+  cpu->iram.separated.SFR.A = cpu->iram.separated.SFR.A >> 1 | cpu->iram.separated.SFR.A << 7;
+}
+
+void RRC(cpu_t *cpu)
+{
+  uint8_t c = ((cpu->iram.separated.SFR.PSW >> 7) << 7);
+  cpu->iram.separated.SFR.PSW = ((cpu->iram.separated.SFR.A >> 0) & 1) << 7;
+  cpu->iram.separated.SFR.A = cpu->iram.separated.SFR.A >> 1 | c << 0;
+}
+
 /******************************/
 /* DATA TRANSFER INSTRUCTIONS */
 /******************************/
@@ -199,9 +323,65 @@ void MOV_c_to_dbi(balt_single_t addr, cpu_t *cpu)
     *addr.ptr ^= 1 << addr.idx;
 }
 
+void JB(balt_single_t addr, cpu_t *cpu)
+{
+  // JB is JBC without bit clear.
+  JBC(addr, cpu, 0);
+}
+
+void JBC(balt_single_t addr, cpu_t *cpu, bool clear_bit)
+{
+  cpu->pc = cpu->pc + 1;
+  uint8_t rel_addr = cpu->rom[cpu->pc];
+  cpu->pc = cpu->pc + 1;
+  if ((*addr.ptr >> addr.idx) & 1) {
+    if (clear_bit) *addr.ptr &= ~(1 << addr.idx);
+    cpu->pc = cpu->pc + rel_addr;
+  }
+}
+
 /*****************************************/
 /* PROGRAM BRANCHING AND MACHINE CONTROL */
 /*****************************************/
+
+void ACALL(iopcode_t ins, cpu_t *cpu)
+{
+  cpu->iram.separated.SFR.SP++;
+  cpu->iram.compact[cpu->iram.separated.SFR.SP] = ((cpu->pc + 2) & 0b0000000011111111) >> 0;
+  cpu->iram.separated.SFR.SP++;
+  cpu->iram.compact[cpu->iram.separated.SFR.SP] = ((cpu->pc + 2) & 0b1111111100000000) >> 8;
+  // Extract bits 5-7 from the instruction and shift them to the left by 3
+  // bits, combine them with all bits from the next byte in ROM, then
+  // combine them with the 5 MSB bits from the next byte in ROM.
+  cpu->pc = ((cpu->pc + 2) & 0b1111100000000000) |
+    ((ins & 0b11100000) << 3) |
+    ((cpu->rom[cpu->pc + 1] & 0b11111111) << 0);
+}
+
+void LCALL(cpu_t *cpu)
+{
+  cpu->iram.separated.SFR.SP++;
+  cpu->iram.compact[cpu->iram.separated.SFR.SP] = ((cpu->pc + 3) & 0b0000000011111111) >> 0;
+  cpu->iram.separated.SFR.SP++;
+  cpu->iram.compact[cpu->iram.separated.SFR.SP] = ((cpu->pc + 3) & 0b1111111100000000) >> 8;
+  cpu->pc = cpu->rom[cpu->pc + 1] << 8 | cpu->rom[cpu->pc + 2] >> 0;
+}
+
+void RET(cpu_t *cpu)
+{
+  cpu->pc = cpu->iram.compact[cpu->iram.separated.SFR.SP - 1] << 8 |
+    cpu->iram.compact[cpu->iram.separated.SFR.SP] >> 0;
+  cpu->iram.separated.SFR.SP--;
+  cpu->iram.separated.SFR.SP--;
+}
+
+void AJMP(iopcode_t ins, cpu_t *cpu)
+{
+  // Same with the last procedure of ACALL.
+  cpu->pc = ((cpu->pc + 2) & 0b1111100000000000) |
+    ((ins & 0b0000000011100000) << 3) |
+    ((cpu->rom[cpu->pc + 1] & 0b11111111) << 0);
+}
 
 void LJMP(cpu_t *cpu)
 {

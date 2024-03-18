@@ -19,6 +19,10 @@
    dptr: data pointer
    edptr: dptr to external ram */
 
+/*************/
+/*  OPCODES  */
+/*************/
+
 // bit addr, data addr, code addr in the reference are location addresses
 // of the bit/byte or 11-bit/16-bit destination addresses
 typedef enum iopcode_t {
@@ -281,10 +285,10 @@ typedef enum iopcode_t {
 /*  ARITHMETIC OPERATIONS  */
 /***************************/
 
-void ADD_r();
-void ADD_db();
-void ADD_ir();
-void ADD_id();
+void ADD_r(iopcode_t ins, cpu_t *cpu);
+void ADD_db(cpu_t *cpu);
+void ADD_ir(iopcode_t ins, cpu_t *cpu);
+void ADD_id(cpu_t *cpu);
 void ADDC_r();
 void ADDC_db();
 void ADDC_ir();
@@ -293,15 +297,15 @@ void SUBB_r();
 void SUBB_db();
 void SUBB_ir();
 void SUBB_id();
-void INC_a();
-void INC_r();
-void INC_db();
-void INC_ir();
+void INC_a(cpu_t *cpu);
+void INC_r(iopcode_t ins, cpu_t *cpu);
+void INC_db(cpu_t *cpu);
+void INC_ir(iopcode_t ins, cpu_t *cpu);
 void INC_dptr();
-void DEC_a();
-void DEC_r();
-void DEC_db();
-void DEC_ir();
+void DEC_a(cpu_t *cpu);
+void DEC_r(iopcode_t ins, cpu_t *cpu);
+void DEC_db(cpu_t *cpu);
+void DEC_ir(iopcode_t ins, cpu_t *cpu);
 void MUL();
 void DIV();
 void DA();
@@ -334,10 +338,10 @@ void CLR_a(cpu_t *cpu);
 // More in Boolean Variable Manipulation group.
 void CPL_a();
 // More in Boolean Variable Manipulation group.
-void RL();
-void RLC();
-void RR();
-void RRC();
+void RL(cpu_t *cpu);
+void RLC(cpu_t *cpu);
+void RR(cpu_t *cpu);
+void RRC(cpu_t *cpu);
 void SWAP();
 
 /******************************/
@@ -396,19 +400,19 @@ void MOV_c_to_dbi(balt_single_t addr, cpu_t *cpu);
 )(i, o)
 void JC();
 void JNC();
-void JB();
+void JB(balt_single_t addr, cpu_t *cpu);
 void JNB();
-void JBC();
+void JBC(balt_single_t addr, cpu_t *cpu, bool clear_bit);
 
 /*****************************************/
 /* PROGRAM BRANCHING AND MACHINE CONTROL */
 /*****************************************/
 
-void ACALL();
-void LCALL();
-void RET();
+void ACALL(iopcode_t ins, cpu_t *cpu);
+void LCALL(cpu_t *cpu);
+void RET(cpu_t *cpu);
 void RETI();
-void AJMP();
+void AJMP(iopcode_t ins, cpu_t *cpu);
 void LJMP(cpu_t *cpu);
 void SJMP();
 void JMP();

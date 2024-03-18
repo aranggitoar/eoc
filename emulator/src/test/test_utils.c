@@ -1,25 +1,31 @@
 #include <test/test_utils.h>
 
-#define HEADER_SYMBOL "=================================================="
+#define HEADER_SYMBOL "--------------------------------------------------"
 #define BOLD "\e[1m"
-#define BOLD_RED "\e[1;31m"
-#define RED "\e[0;31m"
-#define BOLD_YELLOW "\e[1;33m"
-#define BOLD_GREEN "\e[1;32m"
-#define GREEN "\e[0;32m"
+#define BOLD_RED "\e[1;91m"
+#define RED "\e[0;91m"
+#define BOLD_YELLOW "\e[1;93m"
+#define BOLD_GREEN "\e[1;92m"
+#define GREEN "\e[0;92m"
 #define RESET "\e[m"
 
 void printf_header(char *file_name, int file_name_len, bool is_top)
 {
-  if (is_top) printf("%.*s\n", 8 + file_name_len, HEADER_SYMBOL);
+  if (is_top) printf("\n%.*s\n", 8 + file_name_len, HEADER_SYMBOL);
   else printf("\n");
-  printf("==" BOLD_YELLOW "  %s  " RESET "==\n", file_name);
-  if (!is_top) printf("%.*s\n", 8 + file_name_len, HEADER_SYMBOL);
+  printf("---" BOLD_YELLOW " %s " RESET "---\n", file_name);
+  if (!is_top) printf("%.*s\n\n", 8 + file_name_len, HEADER_SYMBOL);
   else printf("\n");
 }
 
 void assert_equal_uint8(uint8_t a, uint8_t b, const char *func_name)
 {
-  if (a == b) printf(BOLD_GREEN "✔" RESET GREEN " %s\n" RESET, func_name);
-  else printf(BOLD_RED "✘" RESET RED " %s\n" RESET "  should be %d, but is %d\n", func_name, a, b);
+  if (a == b) printf(BOLD_GREEN "(PASS) %s\n" RESET, func_name);
+  else printf(BOLD_RED "(FAIL) %s" RESET BOLD "\n       expected: %d\n       actual: %d\n" RESET, func_name, a, b);
+}
+
+void assert_equal_uint16(uint16_t a, uint16_t b, const char *func_name)
+{
+  if (a == b) printf(BOLD_GREEN "(PASS) %s\n" RESET, func_name);
+  else printf(BOLD_RED "(FAIL) %s" RESET BOLD "\n       expected: %d\n       actual: %d\n" RESET, func_name, a, b);
 }

@@ -28,18 +28,23 @@ void run_device_8051ah(device_8051ah_t *device)
       case OP_AJMP_5:
       case OP_AJMP_6:
       case OP_AJMP_7:
+        AJMP(ins, &device->cpu);
         break;
       case OP_LJMP:
         LJMP(&device->cpu);
         break;
       case OP_RR:
+        RR(&device->cpu);
         break;
       case OP_INC_a:
+        INC_a(&device->cpu);
         break;
       case OP_INC_db:
+        INC_db(&device->cpu);
         break;
       case OP_INC_ir0:
       case OP_INC_ir1:
+        INC_ir(ins, &device->cpu);
         break;
       case OP_INC_r0:
       case OP_INC_r1:
@@ -49,8 +54,11 @@ void run_device_8051ah(device_8051ah_t *device)
       case OP_INC_r5:
       case OP_INC_r6:
       case OP_INC_r7:
+        INC_r(ins, &device->cpu);
         break;
       case OP_JBC:
+        device->cpu.pc = device->cpu.pc + 1;
+        JBC(device->iram_balt[device->cpu.rom[device->cpu.pc]], &device->cpu, 1);
         break;
       case OP_ACALL:
       case OP_ACALL_1:
@@ -60,17 +68,23 @@ void run_device_8051ah(device_8051ah_t *device)
       case OP_ACALL_5:
       case OP_ACALL_6:
       case OP_ACALL_7:
+        ACALL(device->cpu.rom[device->cpu.pc], &device->cpu); 
         break;
       case OP_LCALL:
+        LCALL(&device->cpu);
         break;
       case OP_RRC:
+        RRC(&device->cpu);
         break;
       case OP_DEC_a:
+        DEC_a(&device->cpu);
         break;
       case OP_DEC_db:
+        DEC_db(&device->cpu);
         break;
       case OP_DEC_ir0:
       case OP_DEC_ir1:
+        DEC_ir(ins, &device->cpu);
         break;
       case OP_DEC_r0:
       case OP_DEC_r1:
@@ -80,19 +94,26 @@ void run_device_8051ah(device_8051ah_t *device)
       case OP_DEC_r5:
       case OP_DEC_r6:
       case OP_DEC_r7:
+        DEC_r(ins, &device->cpu);
         break;
       case OP_JB:
+        JB(device->iram_balt[device->cpu.rom[device->cpu.pc]], &device->cpu);
         break;
       case OP_RET:
+        RET(&device->cpu);
         break;
       case OP_RL:
+        RL(&device->cpu);
         break;
       case OP_ADD_id:
+        ADD_id(&device->cpu);
         break;
       case OP_ADD_db:
+        ADD_db(&device->cpu);
         break;
       case OP_ADD_ir0:
       case OP_ADD_ir1:
+        ADD_ir(ins, &device->cpu);
         break;
       case OP_ADD_r0:
       case OP_ADD_r1:
@@ -102,12 +123,14 @@ void run_device_8051ah(device_8051ah_t *device)
       case OP_ADD_r5:
       case OP_ADD_r6:
       case OP_ADD_r7:
+        ADD_r(ins, &device->cpu);
         break;
       case OP_JNB:
         break;
       case OP_RETI:
         break;
       case OP_RLC:
+        RLC(&device->cpu);
         break;
       case OP_ADDC_id:
         break;
