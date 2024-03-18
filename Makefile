@@ -8,6 +8,7 @@ CFLAGS = -fsanitize=address -pg -Wall -Wno-unknown-pragmas -Wextra -Wno-pragmas 
 # '-pg' for generating gmon.out for gprof
 # '-fsanitize=address' for detecting memory errors, valgrind alternative
 
+
 # Build shared components
 SRC_SH = src/shared/compiler
 SRC_SH2 = src/shared/rtos
@@ -71,7 +72,7 @@ test_8051ah_ins: $(OBJT)
 
 clean:
 	rm -rf build/*
-	mkdir -p build/shared
+	mkdir -p build/shared/rtos
 	mkdir -p build/cortex_a53
 	mkdir -p build/8051ah
 	mkdir -p build/test/cortex_a53

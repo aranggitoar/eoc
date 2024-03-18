@@ -1,15 +1,11 @@
 # Emulator, OS, Compiler (EOC)
 
-A comprehensive educational project on computers from hardware, system
-software, to application software.
+A comprehensive educational long-term project on computers from hardware,
+system software, application software, which would also illustrate how
+code gets to machine code and vice versa.
 
 ## Contents
 
-The device to emulate would be Cortex A-53 processor which implements the
-Armv8-A architecture. It will run an RTOS similar to FreeRTOS (?).
-
-## Steps
-
-1. Emulator, so we can run the OS on an emulated hardware,
-2. OS, so we can have a platform to target with the compiler,
-3. Compiler, so we can learn about compilation.
+Currently, an Intel 8051AH microcontroller emulator and an exokernel-based
+hard real-time operating system are being written. Later on a compiler
+of C/Python to the A51 assembly will be implemented.
