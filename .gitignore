@@ -1,6 +1,8 @@
-**/ref
-**/build
-**/guide.md
+ref
+build
+guide.md
 *.o
 *.bin
 compile_commands.json
+.cache
+gmon.out
